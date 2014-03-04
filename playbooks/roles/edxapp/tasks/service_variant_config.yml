@@ -22,27 +22,53 @@
 
 - name: "writing {{ item }} supervisor script"
   template: >
-    src={{ item }}.conf.j2 dest={{ EDXAPP_SUPERVISOR_CFG_DIR }}/{{ item }}.conf
-    owner={{ supervisor_user }}
+    src={{ item }}.conf.j2 dest={{ edxapp_cfg_dir }}/{{ item }}.conf
+    group={{ supervisor_user }}
   with_items: service_variants_enabled
-  when: celery_worker is not defined and not devstack
-  sudo_user: "{{ supervisor_user }}"
+  sudo_user: "{{ edxapp_user }}"
 
 - name: writing edxapp supervisor script
   template: >
-    src=edxapp.conf.j2 dest={{ EDXAPP_SUPERVISOR_CFG_DIR }}/edxapp.conf
-    owner={{ supervisor_user }}
-  when: celery_worker is not defined and not devstack
-  sudo_user: "{{ supervisor_user }}"
+    src=edxapp.conf.j2 dest={{ edxapp_cfg_dir }}/edxapp.conf
+    group={{ supervisor_user }}
+  sudo_user: "{{ edxapp_user }}"
 
 # write the supervisor script for celery workers
 
 - name: writing celery worker supervisor script
   template: >
-    src=workers.conf.j2 dest={{ EDXAPP_SUPERVISOR_CFG_DIR }}/workers.conf
+    src=workers.conf.j2 dest={{ edxapp_cfg_dir }}/workers.conf
+    group={{ supervisor_user }}
+  sudo_user: "{{ edxapp_user }}"
+
+# Enable the supervisor jobs
+- name: "enable {{ item }} supervisor script"
+  file: >
+    src={{ edxapp_cfg_dir }}/{{ item }}.conf
+    dest={{ supervisor_cfg_dir }}/{{ item }}.conf
+    state=link
+    owner={{ supervisor_user }}
+  with_items: service_variants_enabled
+  when: celery_worker is not defined and not devstack
+  sudo_user: {{ supervisor_user }}
+
+- name: "enable edxapp supervisor script"
+  file: >
+    src={{ edxapp_cfg_dir }}/edxapp.conf
+    dest={{ supervisor_cfg_dir }}/edxapp.conf
+    state=link
+    owner={{ supervisor_user }}
+  when: celery_worker is not defined and not devstack
+  sudo_user: {{ supervisor_user }}
+
+- name: "enable edxapp supervisor script"
+  file: >
+    src={{ edxapp_cfg_dir }}/workers.conf
+    dest={{ supervisor_cfg_dir }}/workers.conf
+    state=link
     owner={{ supervisor_user }}
   when: celery_worker is defined and not devstack
-  sudo_user: "{{ supervisor_user }}"
+  sudo_user: {{ supervisor_user }}
 
 # Fake syncdb with migrate, only when fake_migrations is defined
 # This overrides the database name to be the test database which
