@@ -50,7 +50,7 @@
     owner={{ supervisor_user }}
   with_items: service_variants_enabled
   when: celery_worker is not defined and not devstack
-  sudo_user: {{ supervisor_user }}
+  sudo_user: "{{ supervisor_user }}"
 
 - name: "enable edxapp supervisor script"
   file: >
@@ -59,7 +59,7 @@
     state=link
     owner={{ supervisor_user }}
   when: celery_worker is not defined and not devstack
-  sudo_user: {{ supervisor_user }}
+  sudo_user: "{{ supervisor_user }}"
 
 - name: "enable edxapp supervisor script"
   file: >
@@ -68,7 +68,7 @@
     state=link
     owner={{ supervisor_user }}
   when: celery_worker is defined and not devstack
-  sudo_user: {{ supervisor_user }}
+  sudo_user: "{{ supervisor_user }}"
 
 # Fake syncdb with migrate, only when fake_migrations is defined
 # This overrides the database name to be the test database which
