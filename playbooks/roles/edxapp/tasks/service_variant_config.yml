@@ -22,7 +22,7 @@
 
 - name: "writing {{ item }} supervisor script"
   template: >
-    src={{ item }}.conf.j2 dest={{ supervisor_cfg_dir }}/{{ item }}.conf
+    src={{ item }}.conf.j2 dest={{ EDXAPP_SUPERVISOR_CFG_DIR }}/{{ item }}.conf
     owner={{ supervisor_user }}
   with_items: service_variants_enabled
   when: celery_worker is not defined and not devstack
@@ -30,7 +30,7 @@
 
 - name: writing edxapp supervisor script
   template: >
-    src=edxapp.conf.j2 dest={{ supervisor_cfg_dir }}/edxapp.conf
+    src=edxapp.conf.j2 dest={{ EDXAPP_SUPERVISOR_CFG_DIR }}/edxapp.conf
     owner={{ supervisor_user }}
   when: celery_worker is not defined and not devstack
   sudo_user: "{{ supervisor_user }}"
@@ -39,7 +39,7 @@
 
 - name: writing celery worker supervisor script
   template: >
-    src=workers.conf.j2 dest={{ supervisor_cfg_dir }}/workers.conf
+    src=workers.conf.j2 dest={{ EDXAPP_SUPERVISOR_CFG_DIR }}/workers.conf
     owner={{ supervisor_user }}
   when: celery_worker is defined and not devstack
   sudo_user: "{{ supervisor_user }}"

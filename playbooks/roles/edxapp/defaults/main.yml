@@ -144,6 +144,9 @@ EDXAPP_USE_GIT_IDENTITY: false
 # Example: "{{ secure_dir }}/files/git-identity"
 EDXAPP_LOCAL_GIT_IDENTITY: !!null
 
+# By default drop this in the supervisor cfg dir.
+EDXAPP_SUPERVISOR_CFG_DIR: "{{supervisor_cfg_dir}}"
+
 # Configuration for database migration
 EDXAPP_TEST_MIGRATE_DB_NAME: "{{ COMMON_ENVIRONMENT }}_{{ COMMON_DEPLOYMENT }}_test_{{ EDXAPP_MYSQL_DB_NAME }}"
 
